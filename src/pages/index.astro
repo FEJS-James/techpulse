@@ -6,141 +6,126 @@ import { getCollection } from 'astro:content';
 const posts = (await getCollection('blog')).sort(
 	(a, b) => new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
 );
-const featured = posts[0];
-const recent = posts.slice(1);
+const hero = posts[0];
+const secondary = posts.slice(1, 3);
+const rest = posts.slice(3);
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+		<style>body{font-family:'Space Grotesk',system-ui,sans-serif}</style>
 	</head>
-	<body class="bg-gray-950 text-gray-200 antialiased">
-		<!-- Nav -->
-		<nav class="sticky top-0 z-50 bg-gray-950/80 backdrop-blur-xl border-b border-gray-800/50">
-			<div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-				<a href="/" class="text-xl font-black tracking-tight">
-					<span class="text-white">Tech</span><span class="text-red-500">Pulse</span><span class="text-gray-500 font-normal text-sm ml-1">Daily</span>
-				</a>
-				<div class="flex gap-6 text-sm font-medium text-gray-400">
-					<a href="/" class="hover:text-white transition">Home</a>
-					<a href="/blog" class="hover:text-white transition">Articles</a>
-					<a href="/about" class="hover:text-white transition">About</a>
+	<body class="bg-[#0a0a0f] text-gray-300 antialiased">
+
+		<!-- Nav — news-style top bar -->
+		<nav class="border-b border-white/5">
+			<div class="max-w-7xl mx-auto px-6 lg:px-10">
+				<!-- Top line: branding + date -->
+				<div class="flex items-center justify-between py-4 border-b border-white/5">
+					<a href="/" class="text-2xl font-bold tracking-tight">
+						<span class="text-white">tech</span><span class="text-red-500">pulse</span>
+					</a>
+					<span class="text-xs text-gray-600 font-mono">
+						{new Date().toLocaleDateString('en-us', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+					</span>
+				</div>
+				<!-- Bottom line: nav links -->
+				<div class="flex items-center gap-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider overflow-x-auto">
+					<a href="/blog" class="hover:text-white transition whitespace-nowrap">All Stories</a>
+					<span class="text-gray-800">|</span>
+					<span class="text-gray-600">Gaming</span>
+					<span class="text-gray-600">Hardware</span>
+					<span class="text-gray-600">AI</span>
+					<span class="text-gray-600">Apple</span>
+					<span class="text-gray-600">Open Source</span>
 				</div>
 			</div>
 		</nav>
 
 		<main>
-			<!-- Hero -->
-			<section class="relative overflow-hidden">
-				<div class="absolute inset-0 bg-gradient-to-br from-red-950/40 via-gray-950 to-purple-950/30"></div>
-				<div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-red-500/10 via-transparent to-transparent"></div>
-				<div class="relative max-w-6xl mx-auto px-6 py-20 md:py-28">
-					<div class="max-w-2xl">
-						<div class="flex items-center gap-2 mb-6">
-							<span class="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
-							<span class="text-red-400 text-sm font-medium uppercase tracking-wider">Live tech coverage</span>
-						</div>
-						<h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6 text-white">
-							Gaming. Hardware.<br><span class="bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">AI. Apple.</span>
-						</h1>
-						<p class="text-lg text-gray-400 leading-relaxed mb-8 max-w-lg">Daily coverage of everything that matters in tech. No fluff. No clickbait. Just the news and analysis you need.</p>
-						<a href="/blog" class="inline-flex items-center gap-2 bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-500 transition shadow-lg shadow-red-900/30">
-							Latest Articles
-							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-						</a>
-					</div>
-				</div>
-			</section>
-
-			<!-- Featured -->
-			{featured && (
-				<section class="max-w-6xl mx-auto px-6 -mt-8 relative z-10">
-					<a href={`/blog/${featured.id}/`} class="block bg-gray-900 rounded-2xl hover:bg-gray-900/80 transition p-8 md:p-10 border border-gray-800 hover:border-red-800/50 shadow-2xl">
-						<div class="flex items-center gap-2 mb-4">
-							<span class="inline-block px-3 py-1 bg-red-500/10 text-red-400 rounded-full text-xs font-bold uppercase tracking-wider">Featured</span>
-							<span class="text-gray-500 text-xs">
-								{new Date(featured.data.pubDate).toLocaleDateString('en-us', { month: 'short', day: 'numeric', year: 'numeric' })}
-							</span>
-						</div>
-						<h2 class="text-2xl md:text-3xl font-bold text-white mb-3">{featured.data.title}</h2>
-						<p class="text-gray-400 leading-relaxed mb-4 max-w-2xl">{featured.data.description}</p>
-						<span class="text-red-400 font-semibold text-sm group-hover:text-red-300">Read article →</span>
-					</a>
-				</section>
-			)}
-
-			<!-- Recent Posts -->
-			<section class="max-w-6xl mx-auto px-6 py-16">
-				<h2 class="text-2xl font-bold text-white mb-8">Latest Coverage</h2>
-				<div class="grid md:grid-cols-2 gap-5">
-					{recent.map((post) => (
-						<a href={`/blog/${post.id}/`} class="group block bg-gray-900/50 rounded-xl p-6 border border-gray-800/50 hover:border-gray-700 hover:bg-gray-900 transition">
-							{post.data.tags && post.data.tags[0] && (
-								<span class="inline-block px-2 py-0.5 bg-gray-800 text-gray-400 rounded text-xs font-medium mb-3">{post.data.tags[0]}</span>
-							)}
-							<h3 class="text-lg font-bold text-white group-hover:text-red-400 transition mb-2">{post.data.title}</h3>
-							<p class="text-gray-500 text-sm leading-relaxed mb-3">{post.data.description}</p>
-							<p class="text-xs text-gray-600">
-								{new Date(post.data.pubDate).toLocaleDateString('en-us', { month: 'long', day: 'numeric', year: 'numeric' })}
-							</p>
-						</a>
-					))}
-				</div>
-			</section>
-
-			<!-- Categories -->
-			<section class="border-t border-gray-800/50">
-				<div class="max-w-6xl mx-auto px-6 py-16">
-					<h2 class="text-2xl font-bold text-white mb-8">Topics</h2>
-					<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-						{[
-							{ icon: '🎮', title: 'Console Gaming', color: 'border-blue-800/50 hover:border-blue-600/50' },
-							{ icon: '🖥️', title: 'PC Building', color: 'border-green-800/50 hover:border-green-600/50' },
-							{ icon: '🤖', title: 'AI & LLMs', color: 'border-purple-800/50 hover:border-purple-600/50' },
-							{ icon: '🍎', title: 'Apple', color: 'border-gray-700/50 hover:border-gray-500/50' },
-							{ icon: '🎯', title: 'PC Gaming', color: 'border-red-800/50 hover:border-red-600/50' },
-							{ icon: '🖥️', title: 'Monitors', color: 'border-cyan-800/50 hover:border-cyan-600/50' },
-							{ icon: '🦞', title: 'OpenClaw', color: 'border-orange-800/50 hover:border-orange-600/50' },
-							{ icon: '🔓', title: 'Open Source', color: 'border-yellow-800/50 hover:border-yellow-600/50' },
-						].map(cat => (
-							<div class={`bg-gray-900/50 rounded-xl p-4 text-center border ${cat.color} transition cursor-default`}>
-								<span class="text-2xl block mb-2">{cat.icon}</span>
-								<h3 class="font-semibold text-gray-300 text-sm">{cat.title}</h3>
+			<!-- Hero Grid — newspaper-style -->
+			<section class="max-w-7xl mx-auto px-6 lg:px-10 py-10">
+				<div class="grid lg:grid-cols-3 gap-px bg-white/5 rounded-2xl overflow-hidden">
+					<!-- Main story — spans 2 cols -->
+					{hero && (
+						<a href={`/blog/${hero.id}/`} class="lg:col-span-2 bg-[#0f0f18] p-8 lg:p-12 group block hover:bg-[#12121f] transition">
+							<div class="flex items-center gap-3 mb-5">
+								<span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+								<span class="text-red-400 text-xs font-bold uppercase tracking-wider">Top Story</span>
+								{hero.data.tags?.[0] && <span class="text-xs text-gray-600 border border-gray-800 px-2 py-0.5 rounded">{hero.data.tags[0]}</span>}
 							</div>
+							<h1 class="text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-tight mb-4 group-hover:text-red-400 transition">{hero.data.title}</h1>
+							<p class="text-gray-400 text-lg leading-relaxed max-w-2xl mb-6">{hero.data.description}</p>
+							<span class="text-sm text-gray-600 font-mono">
+								{new Date(hero.data.pubDate).toLocaleDateString('en-us', { month: 'short', day: 'numeric' })} · 5 min read
+							</span>
+						</a>
+					)}
+
+					<!-- Side stack — 2 stories -->
+					<div class="flex flex-col divide-y divide-white/5">
+						{secondary.map((post) => (
+							<a href={`/blog/${post.id}/`} class="bg-[#0f0f18] p-6 lg:p-8 group block hover:bg-[#12121f] transition flex-1">
+								{post.data.tags?.[0] && <span class="text-xs text-gray-600 border border-gray-800 px-2 py-0.5 rounded">{post.data.tags[0]}</span>}
+								<h2 class="text-lg lg:text-xl font-bold text-white leading-snug mt-3 mb-2 group-hover:text-red-400 transition">{post.data.title}</h2>
+								<p class="text-gray-500 text-sm leading-relaxed line-clamp-3">{post.data.description}</p>
+								<span class="block mt-3 text-xs text-gray-600 font-mono">
+									{new Date(post.data.pubDate).toLocaleDateString('en-us', { month: 'short', day: 'numeric' })}
+								</span>
+							</a>
 						))}
 					</div>
 				</div>
 			</section>
 
-			<!-- CTA -->
-			<section class="bg-gradient-to-r from-red-950/50 to-gray-950 border-t border-gray-800/50">
-				<div class="max-w-6xl mx-auto px-6 py-16 text-center">
-					<h2 class="text-2xl font-bold text-white mb-3">Need Tech Solutions?</h2>
-					<p class="text-gray-400 mb-6 max-w-lg mx-auto">From custom software development to AI integrations and tech consulting — we build what you need.</p>
-					<a href="https://commercialcoding.com" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-white text-gray-900 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
-						Visit Commercial Coding
-						<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+			<!-- More stories -->
+			{rest.length > 0 && (
+				<section class="max-w-7xl mx-auto px-6 lg:px-10 pb-16">
+					<div class="flex items-center gap-4 mb-8">
+						<h2 class="text-xs font-bold text-gray-500 uppercase tracking-widest">More Stories</h2>
+						<div class="flex-1 h-px bg-white/5"></div>
+					</div>
+					<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+						{rest.map((post) => (
+							<a href={`/blog/${post.id}/`} class="group block bg-[#0f0f18] rounded-xl p-6 border border-white/5 hover:border-red-900/30 transition">
+								{post.data.tags?.[0] && <span class="text-xs text-gray-600 mb-3 block">{post.data.tags[0]}</span>}
+								<h3 class="text-base font-bold text-white group-hover:text-red-400 transition leading-snug mb-2">{post.data.title}</h3>
+								<p class="text-gray-600 text-sm">{new Date(post.data.pubDate).toLocaleDateString('en-us', { month: 'short', day: 'numeric' })}</p>
+							</a>
+						))}
+					</div>
+				</section>
+			)}
+
+			<!-- CTA banner -->
+			<section class="max-w-7xl mx-auto px-6 lg:px-10 pb-16">
+				<div class="bg-gradient-to-r from-red-950/50 via-[#0f0f18] to-[#0f0f18] rounded-2xl border border-white/5 p-10 lg:p-14 flex flex-col lg:flex-row items-center justify-between gap-8">
+					<div>
+						<h2 class="text-2xl font-bold text-white mb-2">Need tech built right?</h2>
+						<p class="text-gray-400">Web apps, AI integrations, custom software. We ship production code.</p>
+					</div>
+					<a href="https://commercialcoding.com" target="_blank" class="shrink-0 bg-white text-gray-900 px-7 py-3.5 rounded-full font-bold hover:bg-gray-100 transition text-sm">
+						commercialcoding.com →
 					</a>
 				</div>
 			</section>
 		</main>
 
-		<!-- Footer -->
-		<footer class="bg-gray-950 border-t border-gray-800/50">
-			<div class="max-w-6xl mx-auto px-6 py-12">
-				<div class="flex flex-col md:flex-row justify-between items-center gap-4">
-					<div>
-						<p class="font-bold text-lg"><span class="text-white">Tech</span><span class="text-red-500">Pulse</span> <span class="text-gray-600 font-normal text-sm">Daily</span></p>
-						<p class="text-gray-500 text-sm">Your daily dose of tech news and analysis.</p>
-					</div>
-					<div class="flex gap-6 text-sm text-gray-500">
-						<a href="/blog" class="hover:text-white transition">Articles</a>
-						<a href="/about" class="hover:text-white transition">About</a>
-						<a href="https://commercialcoding.com" target="_blank" class="hover:text-white transition">Commercial Coding</a>
-					</div>
+		<!-- Footer — minimal -->
+		<footer class="border-t border-white/5">
+			<div class="max-w-7xl mx-auto px-6 lg:px-10 py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+				<p class="text-sm font-bold"><span class="text-white">tech</span><span class="text-red-500">pulse</span></p>
+				<div class="flex gap-6 text-xs text-gray-600">
+					<a href="/blog" class="hover:text-white transition">Stories</a>
+					<a href="/about" class="hover:text-white transition">About</a>
+					<a href="https://commercialcoding.com" target="_blank" class="hover:text-white transition">Commercial Coding</a>
 				</div>
-				<p class="text-xs text-gray-700 mt-8 text-center">&copy; 2026 TechPulse Daily. All rights reserved.</p>
+				<p class="text-xs text-gray-700">© 2026</p>
 			</div>
 		</footer>
 	</body>
