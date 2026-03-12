@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://techpulselab.com/sitemap-index.xml

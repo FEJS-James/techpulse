@@ -2,21 +2,79 @@
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_TITLE } from '../consts';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate } = Astro.props;
+const { title, description, pubDate, updatedDate, tags } = Astro.props;
+
+const heroImages: Record<string, string> = {
+	'Gaming': 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=1200&q=80',
+	'Console': 'https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=1200&q=80',
+	'AI': 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&q=80',
+	'GPU': 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=1200&q=80',
+	'PC Hardware': 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=1200&q=80',
+	'Open Source': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80',
+	'default': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&q=80',
+};
+function getImage(t?: string[]) {
+	if (!t?.length) return heroImages['default'];
+	for (const tag of t) { if (heroImages[tag]) return heroImages[tag]; }
+	return heroImages['default'];
+}
+function readTime(desc: string) {
+	return Math.max(3, Math.ceil(desc.length / 200)) + ' min read';
+}
+const tagColors: Record<string, string> = {
+	'AI': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+	'Gaming': 'bg-green-500/20 text-green-300 border-green-500/30',
+	'Console': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+	'GPU': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+	'PC Hardware': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+	'Open Source': 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+};
+function tagColor(tag: string) {
+	return tagColors[tag] || 'bg-gray-500/20 text-gray-300 border-gray-500/30';
+}
+
+const jsonLd = {
+	"@context": "https://schema.org",
+	"@type": "Article",
+	"headline": title,
+	"description": description,
+	"datePublished": pubDate.toISOString(),
+	...(updatedDate && { "dateModified": updatedDate.toISOString() }),
+	"author": { "@type": "Organization", "name": "TechPulse Daily", "url": "https://techpulse.pages.dev" },
+	"publisher": { "@type": "Organization", "name": "TechPulse Daily" },
+	"mainEntityOfPage": { "@type": "WebPage", "@id": Astro.url },
+	"image": getImage(tags),
+};
 ---
 
+<!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
+		<BaseHead title={`${title} — ${SITE_TITLE}`} description={description} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+		<meta property="og:type" content="article" />
+		<meta property="article:published_time" content={pubDate.toISOString()} />
+		{updatedDate && <meta property="article:modified_time" content={updatedDate.toISOString()} />}
+		{tags?.map(tag => <meta property="article:tag" content={tag} />)}
+		<style>
+			body { font-family: 'Space Grotesk', system-ui, sans-serif; }
+			.dot-pattern { background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 24px 24px; }
+		</style>
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 	</head>
-	<body class="bg-gray-950 text-gray-200 antialiased">
-		<nav class="sticky top-0 z-50 bg-gray-950/80 backdrop-blur-xl border-b border-gray-800/50">
-			<div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-				<a href="/" class="text-xl font-black tracking-tight">
-					<span class="text-white">Tech</span><span class="text-red-500">Pulse</span><span class="text-gray-500 font-normal text-sm ml-1">Daily</span>
+	<body class="bg-[#030308] text-gray-300 antialiased">
+
+		<!-- Nav -->
+		<nav class="sticky top-0 z-50 bg-[#030308]/90 backdrop-blur-xl border-b border-white/5">
+			<div class="max-w-7xl mx-auto px-6 lg:px-10 py-4 flex items-center justify-between">
+				<a href="/" class="text-2xl font-extrabold tracking-tight">
+					<span class="text-white">tech</span><span class="text-red-500">pulse</span>
 				</a>
 				<div class="flex items-center gap-6 text-sm font-medium text-gray-400">
 					<a href="/" class="hover:text-white transition">Home</a>
@@ -26,37 +84,87 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 			</div>
 		</nav>
 
-		<main class="max-w-3xl mx-auto px-6 py-12">
+		<!-- Hero Image -->
+		<div class="relative h-[360px] md:h-[440px] overflow-hidden">
+			<img src={getImage(tags)} alt="" class="w-full h-full object-cover" />
+			<div class="absolute inset-0 bg-gradient-to-t from-[#030308] via-[#030308]/60 to-[#030308]/20"></div>
+		</div>
+
+		<main class="max-w-3xl mx-auto px-6 -mt-24 relative z-10">
 			<article>
 				<header class="mb-10">
-					<p class="text-sm text-red-400 font-medium uppercase tracking-wider mb-3">
-						<FormattedDate date={pubDate} />
-						{updatedDate && <span class="text-gray-600 ml-2">· Updated <FormattedDate date={updatedDate} /></span>}
-					</p>
-					<h1 class="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">{title}</h1>
-					<p class="text-lg text-gray-400 leading-relaxed">{description}</p>
-					<div class="mt-6 h-px bg-gradient-to-r from-red-500 via-red-800 to-transparent"></div>
+					<!-- Tags -->
+					{tags && tags.length > 0 && (
+						<div class="flex flex-wrap gap-2 mb-4">
+							{tags.map((tag: string) => (
+								<span class={`text-[11px] font-semibold px-2.5 py-1 rounded-full border ${tagColor(tag)}`}>{tag}</span>
+							))}
+						</div>
+					)}
+
+					<h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6">{title}</h1>
+					<p class="text-lg text-gray-400 leading-relaxed mb-6">{description}</p>
+
+					<!-- Author / Date / Read Time Bar -->
+					<div class="flex flex-wrap items-center gap-4 py-4 px-5 rounded-xl bg-white/[0.03] border border-white/5 text-sm">
+						<div class="flex items-center gap-2">
+							<div class="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
+								<span class="text-red-400 text-xs font-bold">TP</span>
+							</div>
+							<span class="text-gray-300 font-medium">TechPulse</span>
+						</div>
+						<span class="text-gray-700">|</span>
+						<span class="text-gray-500 font-mono text-xs">
+							<FormattedDate date={pubDate} />
+							{updatedDate && <span class="ml-2 text-gray-600">· Updated <FormattedDate date={updatedDate} /></span>}
+						</span>
+						<span class="text-gray-700">|</span>
+						<span class="text-gray-500 font-mono text-xs">{readTime(description)}</span>
+					</div>
+
+					<!-- Red accent line -->
+					<div class="mt-8 h-0.5 bg-gradient-to-r from-red-500 via-red-700 to-transparent rounded-full"></div>
 				</header>
+
 				<div class="prose max-w-none">
 					<slot />
 				</div>
 			</article>
+
+			<!-- CTA at bottom -->
+			<div class="mt-16 mb-8 rounded-2xl overflow-hidden border border-white/5 relative">
+				<div class="absolute inset-0 bg-gradient-to-r from-red-950/40 via-[#0a0a12] to-[#0a0a12]"></div>
+				<div class="absolute inset-0 dot-pattern opacity-50"></div>
+				<div class="relative p-8 lg:p-10 flex flex-col sm:flex-row items-center justify-between gap-6">
+					<div>
+						<p class="text-red-400 text-[10px] font-bold uppercase tracking-widest mb-1">Sponsored</p>
+						<h3 class="text-xl font-bold text-white mb-1">Need custom software?</h3>
+						<p class="text-gray-400 text-sm">Web apps, AI integrations, production-ready code.</p>
+					</div>
+					<a href="https://commercialcoding.com" target="_blank" rel="noopener" class="shrink-0 bg-red-500 hover:bg-red-400 text-white px-6 py-3 rounded-full font-bold transition text-sm shadow-lg shadow-red-500/20 hover:shadow-red-500/40">
+						commercialcoding.com →
+					</a>
+				</div>
+			</div>
 		</main>
 
-		<footer class="bg-gray-950 border-t border-gray-800/50 mt-20">
-			<div class="max-w-6xl mx-auto px-6 py-12">
-				<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+		<!-- Footer -->
+		<footer class="border-t border-white/5 bg-[#020206] mt-16">
+			<div class="max-w-7xl mx-auto px-6 lg:px-10 py-12">
+				<div class="flex flex-col md:flex-row justify-between items-center gap-6">
 					<div>
-						<p class="font-bold text-lg"><span class="text-white">Tech</span><span class="text-red-500">Pulse</span> <span class="text-gray-600 font-normal text-sm">Daily</span></p>
-						<p class="text-gray-500 text-sm">Your daily dose of tech news and analysis.</p>
+						<p class="text-xl font-extrabold"><span class="text-white">tech</span><span class="text-red-500">pulse</span></p>
+						<p class="text-gray-600 text-sm mt-1">Your daily dose of tech news and analysis.</p>
 					</div>
-					<div class="flex gap-6 text-sm text-gray-500">
+					<div class="flex gap-6 text-xs text-gray-500 font-medium">
 						<a href="/blog" class="hover:text-white transition">Articles</a>
 						<a href="/about" class="hover:text-white transition">About</a>
 						<a href="https://commercialcoding.com" target="_blank" class="hover:text-white transition">Commercial Coding</a>
 					</div>
 				</div>
-				<p class="text-xs text-gray-700 mt-8 text-center">&copy; 2026 TechPulse Daily. All rights reserved.</p>
+				<div class="mt-8 pt-6 border-t border-white/5 text-center">
+					<p class="text-[11px] text-gray-700">© 2026 TechPulse Daily. All rights reserved.</p>
+				</div>
 			</div>
 		</footer>
 	</body>
