@@ -1,6 +1,6 @@
 ---
-title: "NVIDIA RTX 5090 Review: Is It Worth the Hype?"
-description: "NVIDIA's flagship RTX 5090 promises a generational leap in performance. We break down the benchmarks, ray tracing, DLSS 4, and whether it justifies the price tag."
+title: "NVIDIA RTX 5090 Review: Benchmarks, DLSS 4, and Is It Worth $2000?"
+description: "RTX 5090 review with real benchmarks — 80% faster than 4090 in ray tracing, DLSS 4 tested, and why the RTX 5080 might be the smarter buy."
 pubDate: "Mar 12 2026"
 tags: ["GPU", "NVIDIA", "PC Hardware", "Reviews"]
 ---
@@ -48,6 +48,8 @@ At $1,999 MSRP (and street prices hovering around $2,200-2,500), the RTX 5090 is
 ## The Bottom Line
 
 The RTX 5090 is the fastest consumer GPU ever made. Full stop. But the RTX 5080 is the better value for 95% of gamers.
+
+If you're a console gamer weighing your options, check out our [PS5 Pro vs Xbox Series X2 comparison](/blog/ps5-pro-vs-xbox-series-x2). And the AI workload capabilities of this GPU tie directly into the [Claude Opus 4 vs GPT-5 showdown](/blog/claude-4-opus-vs-gpt5-comparison) — local AI inference on Blackwell is seriously impressive. For the AI agent side, see how [OpenClaw uses models](/blog/openclaw-ai-agent-revolution) that benefit from this kind of hardware.
 
 ---
 

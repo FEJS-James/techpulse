@@ -56,3 +56,28 @@ const { title, description, image = FallbackImage } = Astro.props;
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+
+<!-- Umami Analytics -->
+<script defer src="https://umami-seven-tau.vercel.app/script.js" data-website-id="55f897da-a14c-4b4e-a390-bc05778d5d3d"></script>
+
+<!-- GDPR Cookie Consent Banner -->
+<script type="module">
+document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("cookie-consent")) return;
+  const b = document.createElement("div");
+  b.id = "cookie-consent-banner";
+  b.setAttribute("role", "dialog");
+  b.setAttribute("aria-label", "Cookie consent");
+  b.innerHTML = `
+    <div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(3,3,8,0.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,0.1);padding:16px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;font-family:system-ui,sans-serif;font-size:14px;color:#ccc;">
+      <p style="margin:0;flex:1;min-width:200px;">We use cookies for analytics and to improve your experience. <a href="/privacy" style="color:#ef4444;text-decoration:underline;">Learn more</a></p>
+      <div style="display:flex;gap:8px;">
+        <button id="cc-reject" style="background:transparent;color:#999;border:1px solid rgba(255,255,255,0.15);padding:8px 16px;border-radius:9999px;cursor:pointer;font-size:13px;font-weight:500;">Reject</button>
+        <button id="cc-accept" style="background:#ef4444;color:#fff;border:none;padding:8px 20px;border-radius:9999px;cursor:pointer;font-size:13px;font-weight:600;">Accept</button>
+      </div>
+    </div>`;
+  document.body.appendChild(b);
+  document.getElementById("cc-accept")?.addEventListener("click", () => { localStorage.setItem("cookie-consent", "accepted"); b.remove(); });
+  document.getElementById("cc-reject")?.addEventListener("click", () => { localStorage.setItem("cookie-consent", "rejected"); b.remove(); });
+});
+</script>

@@ -1,6 +1,6 @@
 ---
-title: "OpenClaw: The Open Source AI Agent Framework That's Changing Everything"
-description: "OpenClaw lets you run AI agents that control your devices, automate your life, and work across platforms. Here's why developers and power users are paying attention."
+title: "OpenClaw AI Agent Framework: Run Autonomous AI on Your Own Hardware"
+description: "OpenClaw is the open-source AI agent framework that gives models real tools — shell, browser, messaging, smart home. Here's why it's changing everything."
 pubDate: "Mar 12 2026"
 tags: ["AI", "OpenClaw", "Open Source", "Automation"]
 ---
@@ -60,6 +60,8 @@ You'll need an API key from a model provider (Anthropic, OpenAI, or Google), and
 OpenClaw is what happens when you give AI agents real tools and real access. It's not for everyone — you need some technical comfort to set it up. But for those who do, it's genuinely transformative.
 
 Check it out: [github.com/openclaw/openclaw](https://github.com/openclaw/openclaw) | [docs.openclaw.ai](https://docs.openclaw.ai)
+
+Curious which AI model to run with OpenClaw? Our [Claude Opus 4 vs GPT-5 comparison](/blog/claude-4-opus-vs-gpt5-comparison) breaks down the best options. And if you're running AI workloads locally, the [RTX 5090](/blog/nvidia-rtx-5090-review-2026) is the hardware to watch. For the broader industry context of AI's impact on legacy software, see our take on [Adobe's AI pivot and CEO departure](/blog/adobe-ceo-narayen-steps-down).
 
 ---
 
